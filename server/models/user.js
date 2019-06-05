@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let Users = mongoose.model('Users', {
+let Users = mongoose.model('User', {
     email: {
         required: true,
         minlenght: 1,
