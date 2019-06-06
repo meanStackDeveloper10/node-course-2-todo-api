@@ -62,17 +62,25 @@ app.delete('/todos/:id', (req, res) => {
 app.patch('/todos/:id', (req, res) => {
 
     let id = req.params.id;
+    console.log(id);
+    
     let body = _.pick(req.body, ['text', 'completed'])
 
     if (_.isBoolean(body.completed) && body.completed) {
+        console.log('test1');
+        
         body.completedAt = new Date().getTime()
     } else {
-        body.completed = false; body.completedAt = null
+        console.log('test 2');
+        
+        body.completed = false; 
+        body.completedAt = null
     };
 
     Todo.findByIdAndUpdate(id, {$set: body}, {new: true})
     .then((todos) => {
-
+        console.log(JSON.stringify(todos,null,2));
+        
         if (!todos) return res.status(404).send()
         res.send({todos})
     })
