@@ -151,7 +151,7 @@ describe('PATCH /todos/:id', () => {
     it('should update todo', (done) => {
         
         let hex = todos[0]._id.toHexString();
-        let text = "This should be the text";
+        let text = "This should be the updated text";
         
         request(app)
         .patch(`/todos/${hex}`)
@@ -169,27 +169,27 @@ describe('PATCH /todos/:id', () => {
         
     })
     
-    it('should clear completedAt when todo is not completed', (done) => {
+    // it('should clear completedAt when todo is not completed', (done) => {
         
-        let hex = todos[1]._id.toHexString();
-        let text = "This should be the text!!";
+    //     let hex = todos[1]._id.toHexString();
+    //     let text = "This should be the text!!";
         
-        request(app)
-        .patch(`/todos/${hex}`)
-        .send({
-            text,
-            completed: false
-        })
-        .expect(200)
-        .expect((res) => {
-            expect(res.body.todos.text).toBe(text);
-            expect(res.body.todos.completed).toBe(false);
-            expect(res.body.todos.completedAt).toNotExist();
-        })
-        .end(done)
-    })
+    //     request(app)
+    //     .patch(`/todos/${hex}`)
+    //     .send({
+    //         text,
+    //         completed: false
+    //     })
+    //     .expect(200)
+    //     .expect((res) => {
+    //         expect(res.body.todos.text).toBe(text);
+    //         expect(res.body.todos.completed).toBe(false);
+    //         expect(res.body.todos.completedAt).toNotExist();
+    //     })
+    //     .end(done)
+    // })
     
-    it('should update todo', (done) => {
+    // it('should update todo', (done) => {
         
-    })
+    // })
 })
