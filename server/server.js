@@ -14,10 +14,11 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-app.post('/todos', (req, res) => {
+app.post('/todos', authenticate, (req, res) => {
     
     var todo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     });
     
     todo.save().then((docs) => {
@@ -28,19 +29,24 @@ app.post('/todos', (req, res) => {
     
 })
 
-app.get('/todos', (req, res) => {
-    Todo.find()
+app.get('/todos', authenticate, (req, res) => {
+    Todo.find({
+        _creator: req.user._id
+    })
     .then((todos) => res.send({todos}))
     .catch((e) => res.status(400).send(e))
 })
 
 // GET todos/12345
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', authenticate, (req, res) => {
     
     let id = req.params.id;
     if (!ObjectID.isValid(id)) return res.status(400).send()
     
-    Todo.findById(id)
+    Todo.findOne({
+        _id: id,
+        _creator: req.user._id
+    })
     .then((todos) => {
         if (!todos) return res.status(404).send()
         res.send({todos});
@@ -53,7 +59,10 @@ app.delete('/todos/:id', (req, res) => {
     let id = req.params.id;
     if (!ObjectID.isValid(id)) return res.status(404).send()
     
-    Todo.findByIdAndRemove(id)
+    Todo.findOneAndRemove({
+        _id: id,
+        _creator: req.user._id
+    })
     .then((todos) => {
         if (!todos) return res.status(404).send()
         res.send({todos});

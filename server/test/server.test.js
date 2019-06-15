@@ -10,10 +10,11 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //     beforeEach(populateTodos);
 //     it('should create a new todos', (done) => {
 
-    //         let text = 'Test todo text';
+//         let text = 'Test todo text';
 
-    //         request(app)
+//         request(app)
 //         .post('/todos')
+// .set('x-auth', users[0].tokens[0].token)
 //         .send({text})
 //         .expect(200)
 //         .expect((res) => {
@@ -22,10 +23,10 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //             expect(res.body.text).toBe(text);
 //         })
 //         .end((err, res) => {
-    //             if (err) return done(err)
-    //             console.log('RESPONSE INSIDE ',res);
+//             if (err) return done(err)
+//             console.log('RESPONSE INSIDE ',res);
 
-    //             Todo.find({text}).
+//             Todo.find({text}).
 //             then((todos) => {
 //                 expect(todos.length).toBe(1);
 //                 expect(todos[0].text).toBe(text);
@@ -38,13 +39,14 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 
 //     it('should not creat todo with invalid body data', (done) =>{
 
-    //         request(app)
-    //         .post('/todos')
+//         request(app)
+//         .post('/todos')
+// .set('x-auth', users[0].tokens[0].token)
 //         .send({})
 //         .expect(400)
 //         .end((err, res) => {
-    //             if (err) return done(err)
-    
+//             if (err) return done(err)
+
 //             Todo.find().
 //             then((todos) => {
 //                 expect(todos.length).toBe(2);
@@ -58,11 +60,12 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 
 // describe('GET /todos', () => {
 //     it('should get all todos', (done) => {
-    //         request(app)
+//         request(app)
 //         .get('/todos')
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(200)
 //         .expect((res) => {                
-//             expect(res.body.todos.length).toBe(2)
+//             expect(res.body.todos.length).toBe(1)
 //         })
 //         .end(done);
 //     })
@@ -70,10 +73,11 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 
 // describe('GET /todos/:id', () => {
 
-    //     let hex = new ObjectID().toHexString();
+//     let hex = new ObjectID().toHexString();
 //     it('shoud return todo doc', (done) => {
-    //         request(app)
+//         request(app)
 //         .get(`/todos/${todos[0]._id.toHexString()}`)
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(200)
 //         .expect((res) => {
 //             expect(res.body.todos.text).toBe('First test todo')
@@ -81,9 +85,18 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //         .end(done)
 //     })
 
+//     it('shoud not return todo doc created by other user', (done) => {
+//         request(app)
+//         .get(`/todos/${todos[1]._id.toHexString()}`)
+// .set('x-auth', users[0].tokens[0].token)
+//         .expect(404)
+//         .end(done)
+//     })
+
 //     it('should return 404 if todo is not found', (done) => {
-    //         request(app)
+//         request(app)
 //         .get(`/todos/${hex}`)
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(404)
 //         .end(done)
 //     })
@@ -91,36 +104,56 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //     it('should return 400 for non object id', (done) => {
 //         request(app)
 //         .get('/todos/123avc')
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(400)
 //         .end(done)
 //     })
 // })
 
 // describe('Delete /todos/:id', () => {
-    
+
 //     let hex = todos[1]._id.toHexString();
 //     it('should delete todo doc', (done) => {
-    //         request(app)
-    //         .delete(`/todos/${hex}`)
+//         request(app)
+//         .delete(`/todos/${hex}`)
+// .set('x-auth', users[1].tokens[0].token)
 //         .expect(200)
 //         .expect((res) => {
 //             expect(res.body.todos._id).toBe(hex)
 //         })
 //         .end((err, res) => {
-    //             if (err) return done(err)
+//             if (err) return done(err)
 
-    //             Todo.findById(hex)
+//             Todo.findById(hex)
 //             .then((todo) => {
-    //                 expect(todo).toNotExist();
-    //                 done();
+//                 expect(todo).toNotExist();
+//                 done();
 //             })
 //             .catch((e) => done(e))
 //         })
 //     })
 
-//     it('should return 404 if todo is not found', (done) => {
+// it('should delete todo doc', (done) => {
     //         request(app)
+    //         .delete(`/todos/${hex}`)
+    // .set('x-auth', users[0].tokens[0].token)
+    //         .expect(404)
+    //         .end((err, res) => {
+    //             if (err) return done(err)
+    
+    //             Todo.findById(hex)
+    //             .then((todo) => {
+    //                 expect(todo).toExist();
+    //                 done();
+    //             })
+    //             .catch((e) => done(e))
+    //         })
+    //     })
+
+//     it('should return 404 if todo is not found', (done) => {
+//         request(app)
 //         .get(`/todos/${hex}`)
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(404)
 //         .end(done)
 //     })
@@ -128,23 +161,24 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //     it('should return 400 for non object id', (done) => {
 //         request(app)
 //         .get('/todos/123avc')
+// .set('x-auth', users[0].tokens[0].token)
 //         .expect(400)
 //         .end(done)
 //     })
 // })
 
 // describe('PATCH /todos/:id', () => {
-    
-    
+
+
 //     it('should update todo', (done) => {
-    
+
 //         let hex = todos[0]._id.toHexString();
 //         let text = "This should be the updated text";
 
 //         request(app)
 //         .patch(`/todos/${hex}`)
 //         .send({
-    //             completed: true,
+//             completed: true,
 //             text
 //         })
 //         .expect(200)
@@ -158,14 +192,14 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //     })
 
 //     // it('should clear completedAt when todo is not completed', (done) => {
-    
-    //     //     let hex = todos[1]._id.toHexString();
+
+//     //     let hex = todos[1]._id.toHexString();
 //     //     let text = "This should be the text!!";
 
 //     //     request(app)
 //     //     .patch(`/todos/${hex}`)
 //     //     .send({
-    //     //         text,
+//     //         text,
 //     //         completed: false
 //     //     })
 //     //     .expect(200)
@@ -178,7 +212,7 @@ const {todos, populateTodos, users, populateUsers}  = require('./seed/seed');
 //     // })
 
 //     // it('should update todo', (done) => {
-    
+
 //     // })
 // })
 
@@ -186,7 +220,7 @@ it('should create new users', () => {
     beforeEach(populateUsers);
 })
 describe('POST /users/me', () => {
-
+    
     it('should return user if authenticated', (done) => {
         request(app)
         .get('users/me')
